@@ -1,0 +1,370 @@
+
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/tolbert92/forward-testing-paper-trading/blob/main/schemas/forward-test-input.schema.json",
+  "title": "Forward Testing and Paper Trading Input",
+  "description": "Canonical input contract for Skill #7, version 1.0.0.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "request_id",
+    "session_id",
+    "mode",
+    "base_currency",
+    "timezone",
+    "strategy",
+    "portfolio",
+    "instruments",
+    "market_observations",
+    "benchmark_policy",
+    "execution_policy",
+    "risk_policy",
+    "evaluation",
+    "provenance"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "request_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "session_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "mode": {
+      "enum": ["on_demand", "recurring"]
+    },
+    "base_currency": {
+      "$ref": "#/$defs/currency"
+    },
+    "timezone": {
+      "type": "string",
+      "minLength": 1
+    },
+    "strategy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "strategy_id",
+        "version",
+        "frozen_at",
+        "rules",
+        "target_weights"
+      ],
+      "properties": {
+        "strategy_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "version": {
+          "$ref": "#/$defs/version"
+        },
+        "frozen_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "rules": {
+          "type": "object",
+          "required": ["type"],
+          "properties": {
+            "type": {
+              "enum": [
+                "buy_and_hold",
+                "scheduled_rebalance",
+                "threshold_rebalance",
+                "rules_based"
+              ]
+            }
+          },
+          "additionalProperties": true
+        },
+        "target_weights": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        }
+      }
+    },
+    "portfolio": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["as_of", "cash", "positions", "external_flows"],
+      "properties": {
+        "as_of": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "cash": {
+          "$ref": "#/$defs/nonnegativeDecimal"
+        },
+        "positions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "instrument_id",
+              "quantity",
+              "cost_basis",
+              "valuation_mark"
+            ],
+            "properties": {
+              "instrument_id": {
+                "$ref": "#/$defs/identifier"
+              },
+              "quantity": {
+                "$ref": "#/$defs/decimal"
+              },
+              "cost_basis": {
+                "$ref": "#/$defs/nonnegativeDecimal"
+              },
+              "valuation_mark": {
+                "$ref": "#/$defs/nonnegativeDecimal"
+              },
+              "cost_basis_method": {
+                "enum": ["FIFO", "average_cost"]
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "external_flows": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["event_id", "timestamp", "amount", "type"],
+            "properties": {
+              "event_id": {
+                "$ref": "#/$defs/identifier"
+              },
+              "timestamp": {
+                "$ref": "#/$defs/timestamp"
+              },
+              "amount": {
+                "$ref": "#/$defs/nonnegativeDecimal"
+              },
+              "type": {
+                "enum": ["deposit", "withdrawal"]
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    "instruments": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["instrument_id", "currency", "asset_class"],
+        "properties": {
+          "instrument_id": {
+            "$ref": "#/$defs/identifier"
+          },
+          "currency": {
+            "$ref": "#/$defs/currency"
+          },
+          "asset_class": {
+            "enum": [
+              "equity",
+              "fixed_income",
+              "fund",
+              "cash",
+              "other"
+            ]
+          },
+          "calendar_id": {
+            "type": "string"
+          },
+          "lot_size": {
+            "$ref": "#/$defs/positiveDecimal"
+          },
+          "tick_size": {
+            "$ref": "#/$defs/positiveDecimal"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "market_observations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "instrument_id",
+          "observed_at",
+          "available_at",
+          "price"
+        ],
+        "properties": {
+          "instrument_id": {
+            "$ref": "#/$defs/identifier"
+          },
+          "observed_at": {
+            "$ref": "#/$defs/timestamp"
+          },
+          "available_at": {
+            "$ref": "#/$defs/timestamp"
+          },
+          "price": {
+            "$ref": "#/$defs/positiveDecimal"
+          },
+          "volume": {
+            "$ref": "#/$defs/nonnegativeDecimal"
+          },
+          "source": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "benchmark_policy": {
+      "type": "object",
+      "required": ["version", "frozen_at", "components", "rebalance_policy"],
+      "properties": {
+        "version": {
+          "$ref": "#/$defs/version"
+        },
+        "frozen_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "components": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["benchmark_id", "weight"],
+            "properties": {
+              "benchmark_id": {
+                "$ref": "#/$defs/identifier"
+              },
+              "weight": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "rebalance_policy": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "execution_policy": {
+      "type": "object",
+      "required": [
+        "price_model",
+        "commission_per_order",
+        "slippage_bps",
+        "max_volume_participation",
+        "allow_short"
+      ],
+      "properties": {
+        "price_model": {
+          "enum": [
+            "next_eligible_observation",
+            "bid_ask",
+            "conservative_ohlc"
+          ]
+        },
+        "commission_per_order": {
+          "$ref": "#/$defs/nonnegativeDecimal"
+        },
+        "slippage_bps": {
+          "$ref": "#/$defs/nonnegativeDecimal"
+        },
+        "max_volume_participation": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 1
+        },
+        "allow_short": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "risk_policy": {
+      "type": "object",
+      "required": ["max_gross_exposure", "max_position_weight"],
+      "properties": {
+        "max_gross_exposure": {
+          "type": "number",
+          "minimum": 0
+        },
+        "max_position_weight": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "evaluation": {
+      "type": "object",
+      "required": ["decision_at", "through"],
+      "properties": {
+        "decision_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "through": {
+          "$ref": "#/$defs/timestamp"
+        }
+      },
+      "additionalProperties": false
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["source", "input_snapshot_hash"],
+      "properties": {
+        "source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "input_snapshot_hash": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "currency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$"
+    },
+    "decimal": {
+      "type": "string",
+      "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$"
+    },
+    "nonnegativeDecimal": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)(\\.[0-9]+)?$"
+    },
+    "positiveDecimal": {
+      "type": "string",
+      "pattern": "^(0\\.[0-9]*[1-9][0-9]*|[1-9][0-9]*(\\.[0-9]+)?)$"
+    }
+  }
+}
