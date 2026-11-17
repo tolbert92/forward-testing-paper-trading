@@ -1,0 +1,480 @@
+
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/tolbert92/forward-testing-paper-trading/blob/main/schemas/order-event.schema.json",
+  "title": "Skill #7 Immutable Simulation Event",
+  "description": "Version 1.0.0 contract for hypothetical orders, executions, cash movements, corporate actions, valuations, and audit events.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "event_id",
+    "session_id",
+    "run_id",
+    "sequence",
+    "event_type",
+    "occurred_at",
+    "recorded_at",
+    "simulation_only",
+    "source",
+    "payload"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "event_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "session_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "run_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "event_type": {
+      "enum": [
+        "signal_generated",
+        "order_created",
+        "order_submitted",
+        "order_accepted",
+        "order_rejected",
+        "order_partially_filled",
+        "order_filled",
+        "order_canceled",
+        "order_expired",
+        "cash_deposited",
+        "cash_withdrawn",
+        "dividend_paid",
+        "stock_split",
+        "fee_charged",
+        "valuation_recorded",
+        "risk_alert",
+        "strategy_updated",
+        "checkpoint_created",
+        "correction_recorded"
+      ]
+    },
+    "occurred_at": {
+      "$ref": "#/$defs/timestamp"
+    },
+    "recorded_at": {
+      "$ref": "#/$defs/timestamp"
+    },
+    "available_at": {
+      "$ref": "#/$defs/timestamp"
+    },
+    "simulation_only": {
+      "const": true
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["producer", "source_id"],
+      "properties": {
+        "producer": {
+          "$ref": "#/$defs/identifier"
+        },
+        "source_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "correlation_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "source_event_id": {
+          "$ref": "#/$defs/identifier"
+        }
+      }
+    },
+    "order_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "instrument_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "strategy_version": {
+      "$ref": "#/$defs/version"
+    },
+    "previous_event_hash": {
+      "type": ["string", "null"]
+    },
+    "event_hash": {
+      "type": "string",
+      "minLength": 1
+    },
+    "payload": {
+      "type": "object"
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "decimal": {
+      "type": "string",
+      "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$"
+    },
+    "nonnegativeDecimal": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)(\\.[0-9]+)?$"
+    },
+    "positiveDecimal": {
+      "type": "string",
+      "pattern": "^(0\\.[0-9]*[1-9][0-9]*|[1-9][0-9]*(\\.[0-9]+)?)$"
+    },
+    "orderPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "side",
+        "order_type",
+        "quantity",
+        "time_in_force"
+      ],
+      "properties": {
+        "side": {
+          "enum": ["buy", "sell"]
+        },
+        "order_type": {
+          "enum": [
+            "market",
+            "limit",
+            "stop",
+            "stop_limit"
+          ]
+        },
+        "quantity": {
+          "$ref": "#/$defs/positiveDecimal"
+        },
+        "limit_price": {
+          "$ref": "#/$defs/positiveDecimal"
+        },
+        "stop_price": {
+          "$ref": "#/$defs/positiveDecimal"
+        },
+        "time_in_force": {
+          "enum": ["DAY", "GTC", "IOC", "FOK"]
+        },
+        "decision_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "order_type": {
+                "enum": ["limit", "stop_limit"]
+              }
+            },
+            "required": ["order_type"]
+          },
+          "then": {
+            "required": ["limit_price"]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "order_type": {
+                "enum": ["stop", "stop_limit"]
+              }
+            },
+            "required": ["order_type"]
+          },
+          "then": {
+            "required": ["stop_price"]
+          }
+        }
+      ]
+    },
+    "fillPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fill_id",
+        "side",
+        "quantity",
+        "price",
+        "commission",
+        "slippage"
+      ],
+      "properties": {
+        "fill_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "side": {
+          "enum": ["buy", "sell"]
+        },
+        "quantity": {
+          "$ref": "#/$defs/positiveDecimal"
+        },
+        "price": {
+          "$ref": "#/$defs/positiveDecimal"
+        },
+        "commission": {
+          "$ref": "#/$defs/nonnegativeDecimal"
+        },
+        "slippage": {
+          "$ref": "#/$defs/nonnegativeDecimal"
+        },
+        "liquidity_model": {
+          "type": "string"
+        },
+        "market_observation_id": {
+          "$ref": "#/$defs/identifier"
+        }
+      }
+    },
+    "cashPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["amount", "currency"],
+      "properties": {
+        "amount": {
+          "$ref": "#/$defs/positiveDecimal"
+        },
+        "currency": {
+          "$ref": "#/$defs/currency"
+        },
+        "reference_id": {
+          "$ref": "#/$defs/identifier"
+        }
+      }
+    },
+    "currency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$"
+    },
+    "statusPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reason_code"],
+      "properties": {
+        "reason_code": {
+          "$ref": "#/$defs/identifier"
+        },
+        "message": {
+          "type": "string"
+        },
+        "remaining_quantity": {
+          "$ref": "#/$defs/nonnegativeDecimal"
+        }
+      }
+    },
+    "splitPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["numerator", "denominator"],
+      "properties": {
+        "numerator": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "denominator": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "valuationPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["nav", "cash", "currency"],
+      "properties": {
+        "nav": {
+          "$ref": "#/$defs/decimal"
+        },
+        "cash": {
+          "$ref": "#/$defs/decimal"
+        },
+        "currency": {
+          "$ref": "#/$defs/currency"
+        },
+        "positions_hash": {
+          "type": "string"
+        }
+      }
+    },
+    "auditPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reason_code"],
+      "properties": {
+        "reason_code": {
+          "$ref": "#/$defs/identifier"
+        },
+        "message": {
+          "type": "string"
+        },
+        "reference_event_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "policy_version": {
+          "$ref": "#/$defs/version"
+        },
+        "state_hash": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "order_created"
+          }
+        },
+        "required": ["event_type"]
+      },
+      "then": {
+        "required": ["order_id", "instrument_id"],
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/orderPayload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "enum": [
+              "order_partially_filled",
+              "order_filled"
+            ]
+          }
+        },
+        "required": ["event_type"]
+      },
+      "then": {
+        "required": ["order_id", "instrument_id"],
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/fillPayload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "enum": [
+              "cash_deposited",
+              "cash_withdrawn",
+              "dividend_paid",
+              "fee_charged"
+            ]
+          }
+        },
+        "required": ["event_type"]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/cashPayload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "enum": [
+              "order_rejected",
+              "order_canceled",
+              "order_expired"
+            ]
+          }
+        },
+        "required": ["event_type"]
+      },
+      "then": {
+        "required": ["order_id"],
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/statusPayload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "stock_split"
+          }
+        },
+        "required": ["event_type"]
+      },
+      "then": {
+        "required": ["instrument_id"],
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/splitPayload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "valuation_recorded"
+          }
+        },
+        "required": ["event_type"]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/valuationPayload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "enum": [
+              "risk_alert",
+              "strategy_updated",
+              "checkpoint_created",
+              "correction_recorded"
+            ]
+          }
+        },
+        "required": ["event_type"]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/auditPayload"
+          }
+        }
+      }
+    }
+  ]
+}
