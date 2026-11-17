@@ -1,0 +1,109 @@
+
+{
+  "schema_version": "1.0.0",
+  "request_id": "FT-001",
+  "session_id": "SESSION-FT-001",
+  "mode": "on_demand",
+  "base_currency": "USD",
+  "timezone": "America/New_York",
+  "strategy": {
+    "strategy_id": "BUY-HOLD-60-40",
+    "version": "1.0.0",
+    "frozen_at": "2026-01-01T00:00:00Z",
+    "rules": {
+      "type": "buy_and_hold"
+    },
+    "target_weights": {
+      "ETF-A": 0.6,
+      "ETF-B": 0.4
+    }
+  },
+  "portfolio": {
+    "as_of": "2026-01-01T00:00:00Z",
+    "cash": "10000.00",
+    "positions": [],
+    "external_flows": []
+  },
+  "instruments": [
+    {
+      "instrument_id": "ETF-A",
+      "currency": "USD",
+      "asset_class": "fund",
+      "calendar_id": "XNYS",
+      "lot_size": "1",
+      "tick_size": "0.01"
+    },
+    {
+      "instrument_id": "ETF-B",
+      "currency": "USD",
+      "asset_class": "fund",
+      "calendar_id": "XNYS",
+      "lot_size": "1",
+      "tick_size": "0.01"
+    }
+  ],
+  "market_observations": [
+    {
+      "instrument_id": "ETF-A",
+      "observed_at": "2026-01-02T15:00:00Z",
+      "available_at": "2026-01-02T15:00:01Z",
+      "price": "100.00",
+      "volume": "100000",
+      "source": "synthetic-reference-data"
+    },
+    {
+      "instrument_id": "ETF-B",
+      "observed_at": "2026-01-02T15:00:00Z",
+      "available_at": "2026-01-02T15:00:01Z",
+      "price": "50.00",
+      "volume": "100000",
+      "source": "synthetic-reference-data"
+    },
+    {
+      "instrument_id": "ETF-A",
+      "observed_at": "2026-01-30T21:00:00Z",
+      "available_at": "2026-01-30T21:00:01Z",
+      "price": "110.00",
+      "volume": "100000",
+      "source": "synthetic-reference-data"
+    },
+    {
+      "instrument_id": "ETF-B",
+      "observed_at": "2026-01-30T21:00:00Z",
+      "available_at": "2026-01-30T21:00:01Z",
+      "price": "52.50",
+      "volume": "100000",
+      "source": "synthetic-reference-data"
+    }
+  ],
+  "benchmark_policy": {
+    "version": "1.0.0",
+    "frozen_at": "2026-01-01T00:00:00Z",
+    "components": [
+      {
+        "benchmark_id": "BENCHMARK-60-40",
+        "weight": 1.0
+      }
+    ],
+    "rebalance_policy": "buy_and_hold"
+  },
+  "execution_policy": {
+    "price_model": "next_eligible_observation",
+    "commission_per_order": "0.00",
+    "slippage_bps": "0.00",
+    "max_volume_participation": 0.1,
+    "allow_short": false
+  },
+  "risk_policy": {
+    "max_gross_exposure": 1.0,
+    "max_position_weight": 0.6
+  },
+  "evaluation": {
+    "decision_at": "2026-01-01T00:00:00Z",
+    "through": "2026-01-30T21:00:01Z"
+  },
+  "provenance": {
+    "source": "synthetic-reference-fixture",
+    "input_snapshot_hash": "PENDING-CANONICAL-SHA256"
+  }
+}
