@@ -1,0 +1,436 @@
+
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/tolbert92/forward-testing-paper-trading/blob/main/schemas/visualization-handoff.schema.json",
+  "title": "Skill #7 Visualization Handoff",
+  "description": "Versioned, validated simulation data for Skill #6 — 3D Portfolio Visualization.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "handoff_id",
+    "run_id",
+    "session_id",
+    "producer",
+    "consumer",
+    "generated_at",
+    "simulation_only",
+    "status",
+    "base_currency",
+    "period",
+    "provenance",
+    "validation",
+    "datasets",
+    "visualization",
+    "disclosure"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "handoff_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "run_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "session_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "correlation_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "producer": {
+      "const": "forward-testing-paper-trading"
+    },
+    "consumer": {
+      "const": "3d-portfolio-visualization"
+    },
+    "generated_at": {
+      "$ref": "#/$defs/timestamp"
+    },
+    "simulation_only": {
+      "const": true
+    },
+    "status": {
+      "enum": ["verified", "completed"]
+    },
+    "base_currency": {
+      "$ref": "#/$defs/currency"
+    },
+    "period": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start", "end"],
+      "properties": {
+        "start": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "end": {
+          "$ref": "#/$defs/timestamp"
+        }
+      }
+    },
+    "strategy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["strategy_id", "version"],
+      "properties": {
+        "strategy_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "version": {
+          "$ref": "#/$defs/version"
+        },
+        "label": {
+          "type": "string"
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "engine_version",
+        "input_snapshot_hash",
+        "output_hash"
+      ],
+      "properties": {
+        "engine_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "input_snapshot_hash": {
+          "$ref": "#/$defs/identifier"
+        },
+        "output_hash": {
+          "$ref": "#/$defs/identifier"
+        },
+        "strategy_hash": {
+          "type": "string"
+        },
+        "benchmark_policy_hash": {
+          "type": "string"
+        },
+        "source_run_reference": {
+          "type": "string"
+        }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "passed",
+        "ledger_reconciled",
+        "critical",
+        "warnings"
+      ],
+      "properties": {
+        "passed": {
+          "const": true
+        },
+        "ledger_reconciled": {
+          "const": true
+        },
+        "critical": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/finding"
+          }
+        },
+        "verified_at": {
+          "$ref": "#/$defs/timestamp"
+        }
+      }
+    },
+    "datasets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/dataset"
+      }
+    },
+    "visualization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "default_theme",
+        "rendering_policy",
+        "enabled_features",
+        "disabled_features"
+      ],
+      "properties": {
+        "default_theme": {
+          "enum": ["dark", "light"]
+        },
+        "rendering_policy": {
+          "enum": [
+            "adaptive",
+            "full",
+            "downsampled"
+          ]
+        },
+        "enabled_features": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/feature"
+          }
+        },
+        "disabled_features": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["feature", "reason"],
+            "properties": {
+              "feature": {
+                "$ref": "#/$defs/feature"
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "recommended_chart": {
+          "enum": [
+            "scatter3d",
+            "surface3d",
+            "line3d",
+            "portfolio_evolution",
+            "comparison"
+          ]
+        }
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["format", "reference"],
+        "properties": {
+          "format": {
+            "enum": [
+              "json",
+              "csv",
+              "html",
+              "pdf",
+              "png",
+              "svg"
+            ]
+          },
+          "reference": {
+            "type": "string",
+            "minLength": 1
+          },
+          "content_hash": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "disclosure": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "[Ss]imulat"
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "currency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$"
+    },
+    "decimal": {
+      "type": "string",
+      "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$"
+    },
+    "nullableMetric": {
+      "type": ["number", "null"]
+    },
+    "feature": {
+      "enum": [
+        "portfolio_evolution",
+        "risk_return_3d",
+        "benchmark_comparison",
+        "allocation",
+        "drawdown",
+        "volatility",
+        "trade_markers",
+        "scenario_comparison"
+      ]
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "message"],
+      "properties": {
+        "code": {
+          "$ref": "#/$defs/identifier"
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        },
+        "field_reference": {
+          "type": "string"
+        }
+      }
+    },
+    "point": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["timestamp", "value"],
+      "properties": {
+        "timestamp": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "value": {
+          "oneOf": [
+            {"$ref": "#/$defs/decimal"},
+            {"type": "number"},
+            {"type": "null"}
+          ]
+        },
+        "unavailable_reason": {
+          "type": "string"
+        },
+        "instrument_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "benchmark_id": {
+          "$ref": "#/$defs/identifier"
+        }
+      }
+    },
+    "axis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["field", "label", "unit"],
+      "properties": {
+        "field": {
+          "$ref": "#/$defs/identifier"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "dataset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dataset_id",
+        "dataset_type",
+        "label",
+        "unit",
+        "original_point_count",
+        "points",
+        "axes"
+      ],
+      "properties": {
+        "dataset_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "dataset_type": {
+          "enum": [
+            "portfolio_nav",
+            "benchmark_nav",
+            "portfolio_return",
+            "benchmark_return",
+            "drawdown",
+            "volatility",
+            "allocation",
+            "risk_return",
+            "trade_events",
+            "scenario_comparison"
+          ]
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "currency": {
+          "$ref": "#/$defs/currency"
+        },
+        "original_point_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "points": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/point"
+          }
+        },
+        "axes": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["x", "y"],
+          "properties": {
+            "x": {
+              "$ref": "#/$defs/axis"
+            },
+            "y": {
+              "$ref": "#/$defs/axis"
+            },
+            "z": {
+              "$ref": "#/$defs/axis"
+            }
+          }
+        },
+        "rendering": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["downsampled"],
+          "properties": {
+            "downsampled": {
+              "type": "boolean"
+            },
+            "method": {
+              "type": "string"
+            },
+            "displayed_point_count": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "metric_unavailable_reason": {
+          "type": "string"
+        },
+        "source_hash": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
