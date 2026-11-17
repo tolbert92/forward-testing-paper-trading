@@ -1,0 +1,518 @@
+
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/tolbert92/forward-testing-paper-trading/blob/main/schemas/forward-test-output.schema.json",
+  "title": "Forward Testing and Paper Trading Output",
+  "description": "Canonical simulation result contract for Skill #7, version 1.0.0.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "request_id",
+    "session_id",
+    "run_id",
+    "status",
+    "simulation_only",
+    "strategy",
+    "period",
+    "validation",
+    "verification",
+    "provenance",
+    "artifacts",
+    "disclosure"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "request_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "session_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "run_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "status": {
+      "enum": [
+        "created",
+        "initialized",
+        "validated",
+        "running",
+        "paused",
+        "verifying",
+        "verified",
+        "completed",
+        "failed",
+        "terminated"
+      ]
+    },
+    "simulation_only": {
+      "const": true
+    },
+    "strategy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["strategy_id", "version"],
+      "properties": {
+        "strategy_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "version": {
+          "$ref": "#/$defs/version"
+        }
+      }
+    },
+    "period": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start", "end"],
+      "properties": {
+        "start": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "end": {
+          "$ref": "#/$defs/timestamp"
+        }
+      }
+    },
+    "portfolio": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "base_currency",
+        "ending_nav",
+        "cash",
+        "positions",
+        "external_flows"
+      ],
+      "properties": {
+        "base_currency": {
+          "$ref": "#/$defs/currency"
+        },
+        "ending_nav": {
+          "$ref": "#/$defs/decimal"
+        },
+        "cash": {
+          "$ref": "#/$defs/decimal"
+        },
+        "positions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "instrument_id",
+              "quantity",
+              "market_value"
+            ],
+            "properties": {
+              "instrument_id": {
+                "$ref": "#/$defs/identifier"
+              },
+              "quantity": {
+                "$ref": "#/$defs/decimal"
+              },
+              "market_value": {
+                "$ref": "#/$defs/decimal"
+              },
+              "cost_basis": {
+                "$ref": "#/$defs/decimal"
+              },
+              "unrealized_pnl": {
+                "$ref": "#/$defs/decimal"
+              }
+            }
+          }
+        },
+        "external_flows": {
+          "$ref": "#/$defs/decimal"
+        }
+      }
+    },
+    "performance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total_return", "twr", "xirr"],
+      "properties": {
+        "total_return": {
+          "$ref": "#/$defs/nullableMetric"
+        },
+        "twr": {
+          "$ref": "#/$defs/nullableMetric"
+        },
+        "xirr": {
+          "$ref": "#/$defs/nullableMetric"
+        },
+        "xirr_unavailable_reason": {
+          "type": "string"
+        },
+        "cagr": {
+          "$ref": "#/$defs/nullableMetric"
+        },
+        "cagr_unavailable_reason": {
+          "type": "string"
+        },
+        "realized_pnl": {
+          "$ref": "#/$defs/decimal"
+        },
+        "unrealized_pnl": {
+          "$ref": "#/$defs/decimal"
+        },
+        "turnover": {
+          "$ref": "#/$defs/nullableMetric"
+        }
+      }
+    },
+    "risk": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_drawdown", "sharpe"],
+      "properties": {
+        "max_drawdown": {
+          "$ref": "#/$defs/nullableMetric"
+        },
+        "volatility": {
+          "$ref": "#/$defs/nullableMetric"
+        },
+        "sharpe": {
+          "$ref": "#/$defs/nullableMetric"
+        },
+        "sharpe_unavailable_reason": {
+          "type": "string"
+        },
+        "sortino": {
+          "$ref": "#/$defs/nullableMetric"
+        },
+        "calmar": {
+          "$ref": "#/$defs/nullableMetric"
+        },
+        "max_gross_exposure": {
+          "$ref": "#/$defs/nullableMetric"
+        },
+        "concentration": {
+          "$ref": "#/$defs/nullableMetric"
+        }
+      }
+    },
+    "benchmarks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "benchmark_id",
+          "version",
+          "total_return"
+        ],
+        "properties": {
+          "benchmark_id": {
+            "$ref": "#/$defs/identifier"
+          },
+          "version": {
+            "$ref": "#/$defs/version"
+          },
+          "total_return": {
+            "$ref": "#/$defs/nullableMetric"
+          },
+          "excess_return": {
+            "$ref": "#/$defs/nullableMetric"
+          },
+          "alpha": {
+            "$ref": "#/$defs/nullableMetric"
+          },
+          "beta": {
+            "$ref": "#/$defs/nullableMetric"
+          },
+          "tracking_error": {
+            "$ref": "#/$defs/nullableMetric"
+          },
+          "information_ratio": {
+            "$ref": "#/$defs/nullableMetric"
+          }
+        }
+      }
+    },
+    "orders": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/orderSummary"
+      }
+    },
+    "fills": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/fillSummary"
+      }
+    },
+    "ledger_reference": {
+      "type": "string",
+      "minLength": 1
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["critical", "warnings", "info"],
+      "properties": {
+        "critical": {
+          "$ref": "#/$defs/findings"
+        },
+        "warnings": {
+          "$ref": "#/$defs/findings"
+        },
+        "info": {
+          "$ref": "#/$defs/findings"
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["passed", "ledger_reconciled"],
+      "properties": {
+        "passed": {
+          "type": "boolean"
+        },
+        "ledger_reconciled": {
+          "type": "boolean"
+        },
+        "verification_hash": {
+          "type": "string"
+        },
+        "verified_at": {
+          "$ref": "#/$defs/timestamp"
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "engine_version",
+        "input_snapshot_hash"
+      ],
+      "properties": {
+        "engine_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "input_snapshot_hash": {
+          "type": "string",
+          "minLength": 1
+        },
+        "strategy_hash": {
+          "type": "string"
+        },
+        "benchmark_policy_hash": {
+          "type": "string"
+        },
+        "risk_policy_hash": {
+          "type": "string"
+        },
+        "execution_policy_hash": {
+          "type": "string"
+        },
+        "random_seed": {
+          "type": ["integer", "null"]
+        }
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "reference"],
+        "properties": {
+          "type": {
+            "enum": [
+              "json",
+              "csv",
+              "html",
+              "pdf",
+              "visualization",
+              "ledger",
+              "other"
+            ]
+          },
+          "reference": {
+            "type": "string",
+            "minLength": 1
+          },
+          "content_hash": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "disclosure": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "currency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$"
+    },
+    "decimal": {
+      "type": "string",
+      "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$"
+    },
+    "nullableMetric": {
+      "type": ["number", "null"]
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["code", "message"],
+        "properties": {
+          "code": {
+            "$ref": "#/$defs/identifier"
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1
+          },
+          "field_reference": {
+            "type": "string"
+          },
+          "remediation": {
+            "type": "string"
+          },
+          "detected_at": {
+            "$ref": "#/$defs/timestamp"
+          }
+        }
+      }
+    },
+    "orderSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "order_id",
+        "instrument_id",
+        "side",
+        "status",
+        "quantity"
+      ],
+      "properties": {
+        "order_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "instrument_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "side": {
+          "enum": ["buy", "sell"]
+        },
+        "status": {
+          "enum": [
+            "created",
+            "submitted",
+            "accepted",
+            "partially_filled",
+            "filled",
+            "rejected",
+            "canceled",
+            "expired"
+          ]
+        },
+        "quantity": {
+          "$ref": "#/$defs/decimal"
+        },
+        "filled_quantity": {
+          "$ref": "#/$defs/decimal"
+        },
+        "average_fill_price": {
+          "anyOf": [
+            {"$ref": "#/$defs/decimal"},
+            {"type": "null"}
+          ]
+        }
+      }
+    },
+    "fillSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fill_id",
+        "order_id",
+        "instrument_id",
+        "quantity",
+        "price",
+        "filled_at"
+      ],
+      "properties": {
+        "fill_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "order_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "instrument_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "quantity": {
+          "$ref": "#/$defs/decimal"
+        },
+        "price": {
+          "$ref": "#/$defs/decimal"
+        },
+        "filled_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "commission": {
+          "$ref": "#/$defs/decimal"
+        },
+        "slippage": {
+          "$ref": "#/$defs/decimal"
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {"const": "completed"}
+        },
+        "required": ["status"]
+      },
+      "then": {
+        "required": [
+          "portfolio",
+          "performance",
+          "risk",
+          "benchmarks",
+          "orders",
+          "fills",
+          "ledger_reference"
+        ],
+        "properties": {
+          "verification": {
+            "properties": {
+              "passed": {"const": true},
+              "ledger_reconciled": {"const": true}
+            }
+          }
+        }
+      }
+    }
+  ]
+}
