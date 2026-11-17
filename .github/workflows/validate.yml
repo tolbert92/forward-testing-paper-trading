@@ -1,0 +1,45 @@
+
+name: Skill 7 Contract Validation
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-contracts:
+    name: Validate schemas and reference fixtures
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install \
+            "jsonschema[format]>=4.23,<5" \
+            pytest
+
+      - name: Validate contracts and fixtures
+        run: |
+          python -m pytest -v tests/test_contracts.py
+
+      - name: Report validation completion
+        if: success()
+        run: |
+          echo "Skill #7 contract validation passed."
