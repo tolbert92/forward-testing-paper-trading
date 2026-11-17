@@ -1,0 +1,133 @@
+
+{
+  "schema_version": "1.0.0",
+  "request_id": "FT-001",
+  "session_id": "SESSION-FT-001",
+  "run_id": "RUN-FT-001",
+  "status": "completed",
+  "simulation_only": true,
+  "strategy": {
+    "strategy_id": "BUY-HOLD-60-40",
+    "version": "1.0.0"
+  },
+  "period": {
+    "start": "2026-01-01T00:00:00Z",
+    "end": "2026-01-30T21:00:01Z"
+  },
+  "portfolio": {
+    "base_currency": "USD",
+    "ending_nav": "10800.00",
+    "cash": "0.00",
+    "positions": [
+      {
+        "instrument_id": "ETF-A",
+        "quantity": "60",
+        "market_value": "6600.00",
+        "cost_basis": "6000.00",
+        "unrealized_pnl": "600.00"
+      },
+      {
+        "instrument_id": "ETF-B",
+        "quantity": "80",
+        "market_value": "4200.00",
+        "cost_basis": "4000.00",
+        "unrealized_pnl": "200.00"
+      }
+    ],
+    "external_flows": "0.00"
+  },
+  "performance": {
+    "total_return": 0.08,
+    "twr": 0.08,
+    "xirr": null,
+    "xirr_unavailable_reason": "Not evaluated in FT-001 reference fixture.",
+    "cagr": null,
+    "cagr_unavailable_reason": "Annualization not included in this reference case.",
+    "realized_pnl": "0.00",
+    "unrealized_pnl": "800.00",
+    "turnover": null
+  },
+  "risk": {
+    "max_drawdown": null,
+    "volatility": null,
+    "sharpe": null,
+    "sharpe_unavailable_reason": "Insufficient periodic observations.",
+    "sortino": null,
+    "calmar": null,
+    "max_gross_exposure": 1.0,
+    "concentration": 0.6111111111111112
+  },
+  "benchmarks": [],
+  "orders": [
+    {
+      "order_id": "ORDER-FT-001-A",
+      "instrument_id": "ETF-A",
+      "side": "buy",
+      "status": "filled",
+      "quantity": "60",
+      "filled_quantity": "60",
+      "average_fill_price": "100.00"
+    },
+    {
+      "order_id": "ORDER-FT-001-B",
+      "instrument_id": "ETF-B",
+      "side": "buy",
+      "status": "filled",
+      "quantity": "80",
+      "filled_quantity": "80",
+      "average_fill_price": "50.00"
+    }
+  ],
+  "fills": [
+    {
+      "fill_id": "FILL-FT-001-A",
+      "order_id": "ORDER-FT-001-A",
+      "instrument_id": "ETF-A",
+      "quantity": "60",
+      "price": "100.00",
+      "filled_at": "2026-01-02T15:00:01Z",
+      "commission": "0.00",
+      "slippage": "0.00"
+    },
+    {
+      "fill_id": "FILL-FT-001-B",
+      "order_id": "ORDER-FT-001-B",
+      "instrument_id": "ETF-B",
+      "quantity": "80",
+      "price": "50.00",
+      "filled_at": "2026-01-02T15:00:01Z",
+      "commission": "0.00",
+      "slippage": "0.00"
+    }
+  ],
+  "ledger_reference": "EXPECTED-LEDGER-FT-001",
+  "validation": {
+    "critical": [],
+    "warnings": [],
+    "info": [
+      {
+        "code": "SYNTHETIC_REFERENCE",
+        "message": "Deterministic synthetic portfolio test fixture."
+      },
+      {
+        "code": "BENCHMARK_NOT_EVALUATED",
+        "message": "Benchmark returns are not calculated in this baseline fixture."
+      }
+    ]
+  },
+  "verification": {
+    "passed": true,
+    "ledger_reconciled": true
+  },
+  "provenance": {
+    "engine_version": "reference-expected-1.0.0",
+    "input_snapshot_hash": "PENDING-CANONICAL-SHA256",
+    "strategy_hash": "PENDING-STRATEGY-HASH",
+    "benchmark_policy_hash": "PENDING-BENCHMARK-HASH",
+    "risk_policy_hash": "PENDING-RISK-HASH",
+    "execution_policy_hash": "PENDING-EXECUTION-HASH",
+    "random_seed": null
+  },
+  "artifacts": [],
+  "disclosure": "Hypothetical simulated results generated as independently calculated test expectations. No actual trades or simulation engine execution occurred."
+}
