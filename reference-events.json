@@ -1,0 +1,238 @@
+
+[
+  {
+    "schema_version": "1.0.0",
+    "event_id": "EVT-001",
+    "session_id": "SESSION-FT-001",
+    "run_id": "RUN-FT-001",
+    "sequence": 1,
+    "event_type": "order_created",
+    "occurred_at": "2026-01-01T00:00:01Z",
+    "recorded_at": "2026-01-01T00:00:01Z",
+    "simulation_only": true,
+    "source": {
+      "producer": "forward-testing-paper-trading",
+      "source_id": "FT-001"
+    },
+    "order_id": "ORDER-FT-001-A",
+    "instrument_id": "ETF-A",
+    "strategy_version": "1.0.0",
+    "payload": {
+      "side": "buy",
+      "order_type": "market",
+      "quantity": "60",
+      "time_in_force": "GTC",
+      "decision_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "event_id": "EVT-002",
+    "session_id": "SESSION-FT-001",
+    "run_id": "RUN-FT-001",
+    "sequence": 2,
+    "event_type": "order_created",
+    "occurred_at": "2026-01-01T00:00:02Z",
+    "recorded_at": "2026-01-01T00:00:02Z",
+    "simulation_only": true,
+    "source": {
+      "producer": "forward-testing-paper-trading",
+      "source_id": "FT-001"
+    },
+    "order_id": "ORDER-FT-001-B",
+    "instrument_id": "ETF-B",
+    "strategy_version": "1.0.0",
+    "payload": {
+      "side": "buy",
+      "order_type": "market",
+      "quantity": "80",
+      "time_in_force": "GTC",
+      "decision_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "event_id": "EVT-003",
+    "session_id": "SESSION-FT-001",
+    "run_id": "RUN-FT-001",
+    "sequence": 3,
+    "event_type": "order_submitted",
+    "occurred_at": "2026-01-02T14:59:00Z",
+    "recorded_at": "2026-01-02T14:59:00Z",
+    "simulation_only": true,
+    "source": {
+      "producer": "forward-testing-paper-trading",
+      "source_id": "FT-001"
+    },
+    "order_id": "ORDER-FT-001-A",
+    "instrument_id": "ETF-A",
+    "payload": {}
+  },
+  {
+    "schema_version": "1.0.0",
+    "event_id": "EVT-004",
+    "session_id": "SESSION-FT-001",
+    "run_id": "RUN-FT-001",
+    "sequence": 4,
+    "event_type": "order_submitted",
+    "occurred_at": "2026-01-02T14:59:01Z",
+    "recorded_at": "2026-01-02T14:59:01Z",
+    "simulation_only": true,
+    "source": {
+      "producer": "forward-testing-paper-trading",
+      "source_id": "FT-001"
+    },
+    "order_id": "ORDER-FT-001-B",
+    "instrument_id": "ETF-B",
+    "payload": {}
+  },
+  {
+    "schema_version": "1.0.0",
+    "event_id": "EVT-005",
+    "session_id": "SESSION-FT-001",
+    "run_id": "RUN-FT-001",
+    "sequence": 5,
+    "event_type": "order_accepted",
+    "occurred_at": "2026-01-02T14:59:02Z",
+    "recorded_at": "2026-01-02T14:59:02Z",
+    "simulation_only": true,
+    "source": {
+      "producer": "forward-testing-paper-trading",
+      "source_id": "FT-001"
+    },
+    "order_id": "ORDER-FT-001-A",
+    "instrument_id": "ETF-A",
+    "payload": {}
+  },
+  {
+    "schema_version": "1.0.0",
+    "event_id": "EVT-006",
+    "session_id": "SESSION-FT-001",
+    "run_id": "RUN-FT-001",
+    "sequence": 6,
+    "event_type": "order_accepted",
+    "occurred_at": "2026-01-02T14:59:03Z",
+    "recorded_at": "2026-01-02T14:59:03Z",
+    "simulation_only": true,
+    "source": {
+      "producer": "forward-testing-paper-trading",
+      "source_id": "FT-001"
+    },
+    "order_id": "ORDER-FT-001-B",
+    "instrument_id": "ETF-B",
+    "payload": {}
+  },
+  {
+    "schema_version": "1.0.0",
+    "event_id": "EVT-007",
+    "session_id": "SESSION-FT-001",
+    "run_id": "RUN-FT-001",
+    "sequence": 7,
+    "event_type": "order_filled",
+    "occurred_at": "2026-01-02T15:00:01Z",
+    "recorded_at": "2026-01-02T15:00:01Z",
+    "available_at": "2026-01-02T15:00:01Z",
+    "simulation_only": true,
+    "source": {
+      "producer": "forward-testing-paper-trading",
+      "source_id": "FT-001"
+    },
+    "order_id": "ORDER-FT-001-A",
+    "instrument_id": "ETF-A",
+    "payload": {
+      "fill_id": "FILL-FT-001-A",
+      "side": "buy",
+      "quantity": "60",
+      "price": "100.00",
+      "commission": "0.00",
+      "slippage": "0.00",
+      "market_observation_id": "ETF-A-20260102"
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "event_id": "EVT-008",
+    "session_id": "SESSION-FT-001",
+    "run_id": "RUN-FT-001",
+    "sequence": 8,
+    "event_type": "order_filled",
+    "occurred_at": "2026-01-02T15:00:01Z",
+    "recorded_at": "2026-01-02T15:00:01Z",
+    "available_at": "2026-01-02T15:00:01Z",
+    "simulation_only": true,
+    "source": {
+      "producer": "forward-testing-paper-trading",
+      "source_id": "FT-001"
+    },
+    "order_id": "ORDER-FT-001-B",
+    "instrument_id": "ETF-B",
+    "payload": {
+      "fill_id": "FILL-FT-001-B",
+      "side": "buy",
+      "quantity": "80",
+      "price": "50.00",
+      "commission": "0.00",
+      "slippage": "0.00",
+      "market_observation_id": "ETF-B-20260102"
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "event_id": "EVT-009",
+    "session_id": "SESSION-FT-001",
+    "run_id": "RUN-FT-001",
+    "sequence": 9,
+    "event_type": "valuation_recorded",
+    "occurred_at": "2026-01-02T15:00:01Z",
+    "recorded_at": "2026-01-02T15:00:01Z",
+    "simulation_only": true,
+    "source": {
+      "producer": "forward-testing-paper-trading",
+      "source_id": "FT-001"
+    },
+    "payload": {
+      "nav": "10000.00",
+      "cash": "0.00",
+      "currency": "USD"
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "event_id": "EVT-010",
+    "session_id": "SESSION-FT-001",
+    "run_id": "RUN-FT-001",
+    "sequence": 10,
+    "event_type": "valuation_recorded",
+    "occurred_at": "2026-01-30T21:00:01Z",
+    "recorded_at": "2026-01-30T21:00:01Z",
+    "simulation_only": true,
+    "source": {
+      "producer": "forward-testing-paper-trading",
+      "source_id": "FT-001"
+    },
+    "payload": {
+      "nav": "10800.00",
+      "cash": "0.00",
+      "currency": "USD"
+    }
+  },
+  {
+    "schema_version": "1.0.0",
+    "event_id": "EVT-011",
+    "session_id": "SESSION-FT-001",
+    "run_id": "RUN-FT-001",
+    "sequence": 11,
+    "event_type": "checkpoint_created",
+    "occurred_at": "2026-01-30T21:00:02Z",
+    "recorded_at": "2026-01-30T21:00:02Z",
+    "simulation_only": true,
+    "source": {
+      "producer": "forward-testing-paper-trading",
+      "source_id": "FT-001"
+    },
+    "payload": {
+      "reason_code": "REFERENCE_CHECKPOINT",
+      "message": "Expected final accounting state for deterministic test FT-001."
+    }
+  }
+]
